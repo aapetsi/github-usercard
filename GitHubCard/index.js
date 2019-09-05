@@ -58,11 +58,11 @@ getUserFollowers("aapetsi");
 */
 
 const followersArray = [
-  "tetondan",
+  // "tetondan",
   "dustinmyers",
-  "justsml",
-  "luishrd",
-  "bigknell"
+  // "justsml",
+  "luishrd"
+  // "bigknell"
 ];
 
 followersArray.forEach(user => {
