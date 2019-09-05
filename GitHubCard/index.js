@@ -2,20 +2,21 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-const getGithubUserData = () => {
-  let userData;
+
+const createGithubUserCard = username => {
   axios
-    .get("https://api.github.com/users/aapetsi")
-    .then(res => (userData = res.data))
+    .get(`https://api.github.com/users/${username}`)
+    .then(res => {
+      let userData = res.data;
+      githubCardCreator(userData);
+    })
     .catch(error => {
       console.log(error);
     });
-  return userData;
 };
 
-const githubUserData = getGithubUserData();
+createGithubUserCard("aapetsi");
 
-console.log(githubUserData.data);
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -37,7 +38,15 @@ console.log(githubUserData.data);
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  "tetondan",
+  "dustinmyers",
+  "justsml",
+  "luishrd",
+  "bigknell"
+];
+
+followersArray.forEach(user => createGithubUserCard(user));
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -51,16 +60,18 @@ const githubCardCreator = userInfo => {
   divCard.classList.add("card");
 
   const userImage = document.createElement("img");
-  userImage.src = "";
+  userImage.src = userInfo.avatar_url;
 
   const userProfileLink = document.createElement("a");
-  userProfileLink.href = "";
+  userProfileLink.href = userInfo.html_url;
+  userProfileLink.textContent = userInfo.html_url;
 
   const divCardInfo = document.createElement("div");
   divCardInfo.classList.add("card-info");
 
   const h3 = document.createElement("h3");
   h3.classList.add("name");
+  h3.textContent = userInfo.name;
 
   // create 7 paragraph tags
   const paragraphList = [];
@@ -78,6 +89,12 @@ const githubCardCreator = userInfo => {
   ] = paragraphList;
 
   userName.classList.add("username");
+  userName.textContent = userInfo.login;
+  location.textContent = `Location: ${userInfo.location}`;
+  profile.textContent = "Profile: ";
+  followers.textContent = `Followers: ${userInfo.followers}`;
+  following.textContent = `Following: ${userInfo.following}`;
+  bio.textContent = `Bio: ${userInfo.bio}`;
 
   // append created elements to parent div
   parentDiv.appendChild(divCard);
@@ -94,8 +111,6 @@ const githubCardCreator = userInfo => {
 
   return divCard;
 };
-
-githubCardCreator();
 
 /*
 
