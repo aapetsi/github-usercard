@@ -2,13 +2,29 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-
 const createGithubUserCard = username => {
+  let url = `https://api.github.com/users/${username}`;
   axios
-    .get(`https://api.github.com/users/${username}`)
+    .get(url)
     .then(res => {
       let userData = res.data;
+      // console.log(userData);
       githubCardCreator(userData);
+      // getUserFollowers(username);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+const getUserFollowers = username => {
+  axios
+    .get(`https://api.github.com/users/${username}/followers`)
+    .then(res => {
+      let followersArray = res.data;
+      followersArray.forEach(follower => {
+        createGithubUserCard(follower.login);
+      });
     })
     .catch(error => {
       console.log(error);
@@ -16,6 +32,9 @@ const createGithubUserCard = username => {
 };
 
 createGithubUserCard("aapetsi");
+getUserFollowers("aapetsi");
+
+// createGithubUserCard("aapetsi");
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -46,7 +65,10 @@ const followersArray = [
   "bigknell"
 ];
 
-followersArray.forEach(user => createGithubUserCard(user));
+followersArray.forEach(user => {
+  createGithubUserCard(user);
+  getUserFollowers(user);
+});
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
