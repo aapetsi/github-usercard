@@ -58,10 +58,10 @@ getUserFollowers("aapetsi");
 */
 
 const followersArray = [
-  // "tetondan",
-  "dustinmyers",
+  "tetondan"
+  // "dustinmyers",
   // "justsml",
-  "luishrd"
+  // "luishrd"
   // "bigknell"
 ];
 
