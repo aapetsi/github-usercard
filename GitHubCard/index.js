@@ -2,6 +2,39 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
+const createGithubUserCard = username => {
+  let url = `https://api.github.com/users/${username}`;
+  axios
+    .get(url)
+    .then(res => {
+      let userData = res.data;
+      // console.log(userData);
+      githubCardCreator(userData);
+      // getUserFollowers(username);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+const getUserFollowers = username => {
+  axios
+    .get(`https://api.github.com/users/${username}/followers`)
+    .then(res => {
+      let followersArray = res.data;
+      followersArray.forEach(follower => {
+        createGithubUserCard(follower.login);
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+createGithubUserCard("aapetsi");
+getUserFollowers("aapetsi");
+
+// createGithubUserCard("aapetsi");
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -24,14 +57,88 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  "tetondan"
+  // "dustinmyers",
+  // "justsml",
+  // "luishrd"
+  // "bigknell"
+];
+
+followersArray.forEach(user => {
+  createGithubUserCard(user);
+  getUserFollowers(user);
+});
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
-<div class="card">
-  <img src={image url of user} />
-  <div class="card-info">
+*/
+const githubCardCreator = userInfo => {
+  // select parent div
+  const parentDiv = document.querySelector(".cards");
+  // create dom elements
+  const divCard = document.createElement("div");
+  divCard.classList.add("card");
+
+  const userImage = document.createElement("img");
+  userImage.src = userInfo.avatar_url;
+
+  const userProfileLink = document.createElement("a");
+  userProfileLink.href = userInfo.html_url;
+  userProfileLink.textContent = userInfo.html_url;
+
+  const divCardInfo = document.createElement("div");
+  divCardInfo.classList.add("card-info");
+
+  const h3 = document.createElement("h3");
+  h3.classList.add("name");
+  h3.textContent = userInfo.name;
+
+  // create 7 paragraph tags
+  const paragraphList = [];
+  for (let i = 0; i <= 6; i++) {
+    paragraphList.push(document.createElement("p"));
+  }
+
+  const [
+    userName,
+    location,
+    profile,
+    followers,
+    following,
+    bio
+  ] = paragraphList;
+
+  userName.classList.add("username");
+  userName.textContent = userInfo.login;
+  location.textContent = `Location: ${userInfo.location}`;
+  profile.textContent = "Profile: ";
+  followers.textContent = `Followers: ${userInfo.followers}`;
+  following.textContent = `Following: ${userInfo.following}`;
+  bio.textContent = `Bio: ${userInfo.bio}`;
+
+  // append created elements to parent div
+  parentDiv.appendChild(divCard);
+  divCard.appendChild(userImage);
+  divCard.appendChild(divCardInfo);
+  divCardInfo.appendChild(h3);
+  divCardInfo.appendChild(userName);
+  divCardInfo.appendChild(location);
+  divCardInfo.appendChild(profile);
+  profile.appendChild(userProfileLink);
+  divCardInfo.appendChild(followers);
+  divCardInfo.appendChild(following);
+  divCardInfo.appendChild(bio);
+
+  return divCard;
+};
+
+/*
+
+<div class="card"> 
+  <img src={image url of user} /> 
+  <div class="card-info"> 
     <h3 class="name">{users name}</h3>
     <p class="username">{users user name}</p>
     <p>Location: {users location}</p>
